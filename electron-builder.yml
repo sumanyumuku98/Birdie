@@ -1,0 +1,40 @@
+appId: com.birdie.app
+productName: Birdie
+directories:
+  output: release
+  buildResources: assets
+files:
+  - dist/**/*
+  - assets/**/*
+  - package.json
+
+mac:
+  category: public.app-category.social-networking
+  target:
+    - target: dmg
+      arch:
+        - universal
+  entitlements: resources/entitlements.mac.plist
+  entitlementsInherit: resources/entitlements.mac.plist
+
+win:
+  target:
+    - nsis
+  icon: assets/icon.ico
+
+nsis:
+  oneClick: true
+  perMachine: false
+  allowToChangeInstallationDirectory: false
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Network
+  icon: assets/icon.png
+
+publish:
+  provider: github
+  owner: ""
+  repo: birdie

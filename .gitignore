@@ -1,0 +1,22 @@
+node_modules/
+dist/
+out/
+*.js.map
+*.d.ts
+!eslint.config.mjs
+
+# Electron-builder output
+release/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Environment
+.env
+.env.local
