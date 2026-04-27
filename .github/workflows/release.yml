@@ -22,9 +22,7 @@ jobs:
 
       - name: Install Snapcraft
         if: runner.os == 'Linux'
-        uses: samber/actions-snapcraft@v2
-        with:
-          skip_install: false
+        run: sudo snap install snapcraft --classic
 
       - name: Build distributables
         run: npx electron-builder --publish always
