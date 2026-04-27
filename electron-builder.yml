@@ -20,7 +20,6 @@ mac:
 win:
   target:
     - nsis
-  icon: assets/icon.ico
 
 nsis:
   oneClick: true
