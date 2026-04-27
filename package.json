@@ -25,7 +25,10 @@
     "x",
     "desktop"
   ],
-  "author": "",
+  "author": {
+    "name": "sumanyumuku98",
+    "email": "sumanyumuku98@users.noreply.github.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "@playwright/test": "^1.52.0",
