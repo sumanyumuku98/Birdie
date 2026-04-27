@@ -1,0 +1,38 @@
+name: birdie
+version: '1.0.0'
+summary: A minimal, sleek desktop wrapper for X (x.com)
+description: |
+  Birdie is a lightweight Electron-based desktop app that wraps X (formerly Twitter)
+  with native OS integration including notifications, keyboard shortcuts, and system tray.
+base: core22
+grade: stable
+confinement: strict
+compression: lzo
+
+architectures:
+  - build-on: amd64
+
+apps:
+  birdie:
+    command: birdie
+    extensions: [gnome]
+    plugs:
+      - browser-support
+      - network
+      - network-bind
+      - audio-playback
+      - desktop
+      - desktop-legacy
+      - x11
+      - wayland
+      - unity7
+      - home
+
+parts:
+  birdie:
+    plugin: dump
+    source: .
+    source-type: local
+    stage-packages:
+      - libnotify4
+      - libsecret-1-0

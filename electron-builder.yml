@@ -31,10 +31,23 @@ linux:
   target:
     - AppImage
     - deb
+    - snap
   category: Network
   icon: assets/icon.png
 
+snap:
+  summary: A minimal, sleek desktop wrapper for X (x.com)
+  grade: stable
+  confinement: strict
+  plugs:
+    - browser-support
+    - network
+    - network-bind
+    - audio-playback
+    - desktop
+    - desktop-legacy
+
 publish:
   provider: github
-  owner: ""
+  owner: sumanyumuku98
   repo: birdie

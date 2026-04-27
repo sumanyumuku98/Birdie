@@ -1,0 +1,14 @@
+PackageIdentifier: sumanyumuku98.Birdie
+PackageVersion: 1.0.0
+PackageName: Birdie
+Publisher: sumanyumuku98
+License: MIT
+ShortDescription: A minimal, sleek desktop wrapper for X (x.com)
+PackageUrl: https://github.com/sumanyumuku98/birdie
+InstallerType: nsis
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/sumanyumuku98/birdie/releases/download/v1.0.0/Birdie-Setup-1.0.0.exe
+    InstallerSha256: # Updated on release
+ManifestType: singleton
+ManifestVersion: 1.6.0
