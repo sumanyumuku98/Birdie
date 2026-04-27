@@ -35,6 +35,8 @@ linux:
   icon: assets/icon.png
 
 snap:
+  publish:
+    - github
   summary: A minimal, sleek desktop wrapper for X (x.com)
   grade: stable
   confinement: strict
