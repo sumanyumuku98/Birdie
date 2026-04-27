@@ -20,7 +20,58 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      - name: Install Snapcraft
+        if: runner.os == 'Linux'
+        uses: samber/actions-snapcraft@v2
+        with:
+          skip_install: false
+
       - name: Build distributables
         run: npx electron-builder --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+
+      - name: Upload Snap to Snap Store
+        if: runner.os == 'Linux' && env.SNAPCRAFT_STORE_CREDENTIALS != ''
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: |
+          for snap in release/*.snap; do
+            [ -f "$snap" ] && snapcraft upload --release=stable "$snap"
+          done
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.os }}
+          path: |
+            release/*.dmg
+            release/*.exe
+            release/*.AppImage
+            release/*.deb
+            release/*.snap
+
+  checksums:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum *.dmg *.exe *.AppImage *.deb *.snap 2>/dev/null | tee checksums.txt
+
+      - name: Upload checksums to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

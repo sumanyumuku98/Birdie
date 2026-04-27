@@ -1,0 +1,35 @@
+# Maintainer: sumanyumuku98 <sumanyumuku98@users.noreply.github.com>
+pkgname=birdie-bin
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="A minimal, sleek desktop wrapper for X (x.com)"
+arch=('x86_64')
+url="https://github.com/sumanyumuku98/birdie"
+license=('MIT')
+depends=('electron' 'gtk3' 'nss' 'libnotify' 'libsecret')
+provides=('birdie')
+conflicts=('birdie')
+source=("https://github.com/sumanyumuku98/birdie/releases/download/v${pkgver}/Birdie-${pkgver}.AppImage")
+sha256sums=('SKIP')
+
+package() {
+    install -Dm755 "${srcdir}/Birdie-${pkgver}.AppImage" "${pkgdir}/opt/birdie/birdie.AppImage"
+
+    install -d "${pkgdir}/usr/bin"
+    ln -s /opt/birdie/birdie.AppImage "${pkgdir}/usr/bin/birdie"
+
+    install -Dm644 /dev/stdin "${pkgdir}/usr/share/applications/birdie.desktop" <<EOF
+[Desktop Entry]
+Name=Birdie
+Comment=A minimal, sleek desktop wrapper for X (x.com)
+Exec=birdie %U
+Icon=birdie
+Type=Application
+Categories=Network;
+MimeType=x-scheme-handler/https;
+EOF
+
+    install -Dm644 /dev/stdin "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE" <<EOF
+MIT License — see ${url} for full text.
+EOF
+}
