@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { createWindow } from './window';
 import { createMenu } from './menu';
-import { createTray } from './tray';
+import { createTray, updateTrayWindow } from './tray';
 import { setupTheme } from './theme';
 import { setupAutoUpdater } from './updater';
 
@@ -13,6 +13,12 @@ if (!gotTheLock) {
 } else {
   let mainWindow: BrowserWindow | null = null;
 
+  function createMainWindow(): BrowserWindow {
+    mainWindow = createWindow();
+    createMenu(mainWindow);
+    return mainWindow;
+  }
+
   app.on('second-instance', () => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
@@ -22,9 +28,8 @@ if (!gotTheLock) {
 
   app.whenReady().then(() => {
     setupTheme();
-    mainWindow = createWindow();
-    createMenu(mainWindow);
-    createTray(mainWindow);
+    createMainWindow();
+    createTray(mainWindow!, createMainWindow);
     setupAutoUpdater();
   });
 
@@ -36,8 +41,8 @@ if (!gotTheLock) {
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      mainWindow = createWindow();
-      createMenu(mainWindow);
+      createMainWindow();
+      updateTrayWindow(mainWindow!);
     }
   });
 }
