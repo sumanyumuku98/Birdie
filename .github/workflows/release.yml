@@ -28,11 +28,28 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo snap install snapcraft --classic
 
-      - name: Build distributables
+      - name: Build and publish distributables
+        if: runner.os != 'Linux'
         run: npx electron-builder --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+
+      - name: Build distributables (Linux)
+        if: runner.os == 'Linux'
+        run: npx electron-builder --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Linux assets to GitHub Release
+        if: runner.os == 'Linux'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.AppImage
+            release/*.deb
+            release/*.snap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Snap to Snap Store
         if: runner.os == 'Linux' && env.SNAPCRAFT_STORE_CREDENTIALS != ''
