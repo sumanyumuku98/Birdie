@@ -3,8 +3,23 @@ import path from 'path';
 import { APP_NAME } from '../shared/constants';
 
 let tray: Tray | null = null;
+let currentWindow: BrowserWindow | null = null;
 
-export function createTray(mainWindow: BrowserWindow): Tray {
+export type WindowFactory = () => BrowserWindow;
+
+function getOrCreateWindow(factory: WindowFactory): BrowserWindow {
+  if (!currentWindow || currentWindow.isDestroyed()) {
+    currentWindow = factory();
+  }
+  return currentWindow;
+}
+
+export function createTray(
+  mainWindow: BrowserWindow,
+  windowFactory: WindowFactory,
+): Tray {
+  currentWindow = mainWindow;
+
   const iconPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon.png');
 
   // Use a small native image; fallback to empty if file doesn't exist
@@ -27,19 +42,26 @@ export function createTray(mainWindow: BrowserWindow): Tray {
     {
       label: 'Show',
       click: () => {
-        mainWindow.show();
-        mainWindow.focus();
+        const win = getOrCreateWindow(windowFactory);
+        win.show();
+        win.focus();
       },
     },
     {
       label: 'Hide',
-      click: () => mainWindow.hide(),
+      click: () => {
+        if (currentWindow && !currentWindow.isDestroyed()) {
+          currentWindow.hide();
+        }
+      },
     },
     { type: 'separator' },
     {
       label: 'Quit',
       click: () => {
-        mainWindow.destroy();
+        if (currentWindow && !currentWindow.isDestroyed()) {
+          currentWindow.destroy();
+        }
         tray?.destroy();
         process.exit(0);
       },
@@ -49,13 +71,18 @@ export function createTray(mainWindow: BrowserWindow): Tray {
   tray.setContextMenu(contextMenu);
 
   tray.on('click', () => {
-    if (mainWindow.isVisible()) {
-      mainWindow.hide();
+    const win = getOrCreateWindow(windowFactory);
+    if (win.isVisible()) {
+      win.hide();
     } else {
-      mainWindow.show();
-      mainWindow.focus();
+      win.show();
+      win.focus();
     }
   });
 
   return tray;
+}
+
+export function updateTrayWindow(newWindow: BrowserWindow): void {
+  currentWindow = newWindow;
 }

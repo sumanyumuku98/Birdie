@@ -1,6 +1,6 @@
 {
   "name": "birdie",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A minimal, sleek desktop wrapper for X (x.com)",
   "main": "dist/main/index.js",
   "scripts": {
